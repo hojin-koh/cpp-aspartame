@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-// Option interfaces
+// Option classes
 #pragma once
+#include <aspartamev0/itf-opt.h>
+
+#include <cppcfwv0/pimpl.h>
 
 namespace aspartamev0 {
 
-  // Basic interface for all options
-  struct IOpt {
-    bool isChanged() const { return m_changed; }
-    void reset() = 0;
+  // Scalar option
+  template <typename T>
+  struct Opt : public IOptScalar {
+    Opt();
+    Opt(const T& value);
 
-    IOpt() = default;
-    // No copy or move for options
-    IOpt(IOpt&& rhs) noexcept = delete;
-    IOpt& operator=(IOpt&& rhs) noexcept = delete;
-    IOpt(const IOpt& rhs) = delete;
-    IOpt& operator=(const IOpt& rhs) = delete;
-  protected:
-    ~IOpt() = default; // To prevent polymorphic use
-    bool m_changed {false};
-  };
+    void reset();
+    const char* getStr() const;
+    void setStr(const char* input);
 
-  struct IOptScalar : public IOpt {
-    using IOpt::IOpt;
-    const char* getStr() const = 0;
-    void setStr(const char* input) = 0;
+    operator T();
+    operator T() const;
+    T& operator=(const T& rhs);
+    T& operator=(T&& rhs);
+  private:
+    class Impl; cppcfwv0::PImpl<Impl> pimpl;
   };
 
 }

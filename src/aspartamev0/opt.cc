@@ -27,26 +27,11 @@ namespace aspartamev0 {
 
   template <typename T, int SIZE>
   struct Opt<T, SIZE>::Impl {
-    Impl() : m_default(T()), m_data(m_default) {}
+    Impl() : m_default(T()), m_data(T()) {}
     Impl(const T& value) : m_default(value), m_data(value) {}
 
-    T m_data;
     const T m_default;
-
-    // Provide assignment operator that shouldn't be called but are needed to compile
-    Impl& operator=(const Impl& rhs) {
-      m_data = rhs.m_data;
-      return *this;
-    }
-  };
-
-  template <> // string specialization
-  struct OptStr::Impl {
-    Impl() : m_default(""), m_data("") {}
-    Impl(const char* value) : m_default("RRR"), m_data("RRR") {}
-
-    std::string m_data;
-    const std::string m_default;
+    T m_data;
 
     // Provide assignment operator that shouldn't be called but are needed to compile
     Impl& operator=(const Impl& rhs) {
@@ -154,7 +139,32 @@ namespace aspartamev0 {
     }
   }
 
-  // ==== String Specizliation below ==== //
+
+  // ==== String Specialization below ==== //
+
+  template <> // string specialization
+  struct OptStr::Impl {
+    Impl() : m_default(""), m_data("") {}
+    Impl(const char* value) : m_default(value), m_data(value) {}
+
+    const std::string m_default;
+    std::string m_data;
+
+    // Provide assignment operator that shouldn't be called but are needed to compile
+    Impl& operator=(const Impl& rhs) {
+      m_data = rhs.m_data;
+      return *this;
+    }
+  };
+
+  template <>
+  OptStr::Opt(const char* const& value) : pimpl(value) {}
+
+  template <>
+  OptStr::Opt(const OptStr& rhs) : pimpl(rhs.pimpl) {}
+
+  template <>
+  OptStr::Opt(OptStr&& rhs) noexcept : pimpl(std::move(rhs.pimpl)) {}
 
 
   template <>
@@ -174,6 +184,7 @@ namespace aspartamev0 {
 
   template <>
   const char* OptStr::operator=(const char* const& value) {
+    if (value == nullptr) throw std::domain_error("Encountered null pointer when assigning string");
     m_changed = true;
     return (pimpl->m_data = value).c_str();
   }
@@ -195,9 +206,15 @@ namespace aspartamev0 {
     return pimpl->m_default.c_str();
   }
 
-  template <> // string specialization
+  template <>
+  void OptStr::reset() {
+    m_changed = false;
+    pimpl->m_data = pimpl->m_default;
+  }
+
+  template <>
   void OptStr::set(const char* value, bool canThrow) {
-    if (value == nullptr) throw std::domain_error("Encountered null pointer when trying to parse into a boolean value");
+    if (value == nullptr) throw std::domain_error("Encountered null pointer when trying to set a string value");
     pimpl->m_data = value;
   }
 

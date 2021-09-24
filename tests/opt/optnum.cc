@@ -58,8 +58,8 @@ SCENARIO("Number Opts", "[optnum]") {
     aspartamev0::OptInt i2a {i2};
 
     THEN("Assign one to another shouldn't affect the default value") {
-      REQUIRE(i1.getDefault() == 10);
       i1 = i2;
+      REQUIRE(i1.getDefault() == 10);
       REQUIRE(i1 == 20);
       i1.reset();
       REQUIRE(i1 == 10);
@@ -97,7 +97,7 @@ SCENARIO("Number Opts", "[optnum]") {
       REQUIRE(!b);
     }
 
-    THEN("Nullptr will throw exceptions or fails silently") {
+    THEN("Nullptr will throw exceptions") {
       REQUIRE_THROWS_AS(i.set(nullptr), std::domain_error);
       REQUIRE_THROWS_AS(f.set(nullptr), std::domain_error);
       REQUIRE_THROWS_AS(b.set(nullptr), std::domain_error);

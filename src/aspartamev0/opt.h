@@ -48,7 +48,7 @@ namespace aspartamev0 {
     class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
   };
 
-  // Scalar option
+  // Scalar option - string specialization
   template <int SIZE>
   struct Opt<const char*, SIZE> : public IOpt {
     using IOpt::IOpt;

@@ -44,9 +44,6 @@ namespace aspartamev0 {
   Opt<T,SIZE>::Opt(const T& value) : pimpl(value) {}
 
   template <typename T, int SIZE>
-  Opt<T,SIZE>::Opt(T&& value) noexcept : pimpl(std::move(value)) {}
-
-  template <typename T, int SIZE>
   Opt<T,SIZE>::Opt(const Opt<T,SIZE>& rhs) : pimpl(rhs.pimpl) {}
 
   template <typename T, int SIZE>
@@ -63,32 +60,29 @@ namespace aspartamev0 {
   }
 
   template <typename T, int SIZE>
-  const T& Opt<T,SIZE>::operator()() const {
+  const T Opt<T,SIZE>::operator()() const {
     return pimpl->m_data;
   }
 
   template <typename T, int SIZE>
-  T& Opt<T,SIZE>::operator=(const T& value) {
+  Opt<T,SIZE>& Opt<T,SIZE>::operator=(const T& value) {
     m_changed = true;
-    return (pimpl->m_data = value);
+    pimpl->m_data = value;
+    return *this;
   }
 
   template <typename T, int SIZE>
-  T& Opt<T,SIZE>::operator=(T&& value) noexcept {
+  Opt<T,SIZE>& Opt<T,SIZE>::operator=(const Opt<T,SIZE>& rhs) {
     m_changed = true;
-    return (pimpl->m_data = std::move(value));
+    pimpl->m_data = rhs.pimpl->m_data;
+    return *this;
   }
 
   template <typename T, int SIZE>
-  T& Opt<T,SIZE>::operator=(const Opt<T,SIZE>& rhs) {
+  Opt<T,SIZE>& Opt<T,SIZE>::operator=(Opt<T,SIZE>&& rhs) noexcept {
     m_changed = true;
-    return (pimpl->m_data = rhs.pimpl->m_data);
-  }
-
-  template <typename T, int SIZE>
-  T& Opt<T,SIZE>::operator=(Opt<T,SIZE>&& rhs) noexcept {
-    m_changed = true;
-    return (pimpl->m_data = std::move(rhs.pimpl->m_data));
+    pimpl->m_data = std::move(rhs.pimpl->m_data);
+    return *this;
   }
 
   template <typename T, int SIZE>
@@ -98,7 +92,7 @@ namespace aspartamev0 {
   }
 
   template <typename T, int SIZE>
-  const T& Opt<T,SIZE>::getDefault() {
+  const T Opt<T,SIZE>::getDefault() {
     return pimpl->m_default;
   }
 
@@ -158,16 +152,6 @@ namespace aspartamev0 {
   };
 
   template <>
-  OptStr::Opt(const char* const& value) : pimpl(value) {}
-
-  template <>
-  OptStr::Opt(const OptStr& rhs) : pimpl(rhs.pimpl) {}
-
-  template <>
-  OptStr::Opt(OptStr&& rhs) noexcept : pimpl(std::move(rhs.pimpl)) {}
-
-
-  template <>
   OptStr::operator const char*() {
     return pimpl->m_data.c_str();
   }
@@ -183,33 +167,16 @@ namespace aspartamev0 {
   }
 
   template <>
-  const char* OptStr::operator=(const char* const& value) {
+  OptStr& OptStr::operator=(const char* const& value) {
     if (value == nullptr) throw std::domain_error("Encountered null pointer when assigning string");
     m_changed = true;
-    return (pimpl->m_data = value).c_str();
-  }
-
-  template <>
-  const char* OptStr::operator=(const OptStr& rhs) {
-    m_changed = true;
-    return (pimpl->m_data = rhs.pimpl->m_data).c_str();
-  }
-
-  template <>
-  const char* OptStr::operator=(OptStr&& rhs) noexcept {
-    m_changed = true;
-    return (pimpl->m_data = std::move(rhs.pimpl->m_data)).c_str();
+    pimpl->m_data = value;
+    return *this;
   }
 
   template <>
   const char* const OptStr::getDefault() {
     return pimpl->m_default.c_str();
-  }
-
-  template <>
-  void OptStr::reset() {
-    m_changed = false;
-    pimpl->m_data = pimpl->m_default;
   }
 
   template <>

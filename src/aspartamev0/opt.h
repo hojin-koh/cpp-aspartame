@@ -29,31 +29,6 @@ namespace aspartamev0 {
     using IOpt::IOpt;
     using typeValue = T;
     Opt(const typeValue& value);
-    Opt(typeValue&& value) noexcept;
-    Opt(const Opt& rhs);
-    Opt(Opt&& rhs) noexcept;
-
-    void reset();
-    void set(const char* value, bool canThrow = true);
-    const typeValue& getDefault();
-
-    operator typeValue();
-    operator typeValue() const;
-    const typeValue& operator()() const; // explicit version of getting the value, for cases where the implicit conversion doesn't work
-    typeValue& operator=(const typeValue& value);
-    typeValue& operator=(typeValue&& value) noexcept;
-    typeValue& operator=(const Opt& rhs);
-    typeValue& operator=(Opt&& rhs) noexcept;
-  private:
-    class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
-  };
-
-  // Scalar option - string specialization
-  template <int SIZE>
-  struct Opt<const char*, SIZE> : public IOpt {
-    using IOpt::IOpt;
-    using typeValue = const char*;
-    Opt(const typeValue& value);
     Opt(const Opt& rhs);
     Opt(Opt&& rhs) noexcept;
 
@@ -64,9 +39,9 @@ namespace aspartamev0 {
     operator typeValue();
     operator typeValue() const;
     const typeValue operator()() const; // explicit version of getting the value, for cases where the implicit conversion doesn't work
-    typeValue operator=(const typeValue& value);
-    typeValue operator=(const Opt& rhs);
-    typeValue operator=(Opt&& rhs) noexcept;
+    Opt& operator=(const typeValue& value);
+    Opt& operator=(const Opt& rhs);
+    Opt& operator=(Opt&& rhs) noexcept;
   private:
     class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
   };

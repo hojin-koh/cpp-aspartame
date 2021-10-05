@@ -71,10 +71,10 @@ namespace aspartamev0 {
     class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
   };
 
-  using OptInt = Opt<int64_t, 16>;
-  using OptFloat = Opt<double, 16>;
-  using OptBool = Opt<bool, 2>;
-  using OptStr = Opt<const char*, 16>;
+  using OptInt = Opt<int64_t, sizeof(int64_t)*2>;
+  using OptFloat = Opt<double, sizeof(double)*2>;
+  using OptBool = Opt<bool, sizeof(bool)*2>;
+  using OptStr = Opt<const char*, sizeof(char*)*2>;
 
 }
 

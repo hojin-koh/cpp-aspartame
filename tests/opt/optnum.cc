@@ -30,6 +30,11 @@ SCENARIO("Number Opts", "[optnum]") {
       REQUIRE(add1(i) == 31);
     }
 
+    THEN("They can be used in arithmetics") {
+      REQUIRE(i + i*2 == 90);
+      REQUIRE(i + 4*f == 31);
+    }
+
     THEN("They should have some other value after setting it") {
       i = 50;
       REQUIRE(i == 50);

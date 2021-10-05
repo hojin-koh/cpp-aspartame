@@ -220,7 +220,7 @@ namespace aspartamev0 {
 
 }
 
-ASPARTAMEV0_OPT_IMPL(int64_t, 16);
-ASPARTAMEV0_OPT_IMPL(double, 16);
-ASPARTAMEV0_OPT_IMPL(bool, 2);
-ASPARTAMEV0_OPT_IMPL(const char*, 16);
+ASPARTAMEV0_OPT_IMPL(int64_t, sizeof(int64_t)*2);
+ASPARTAMEV0_OPT_IMPL(double, sizeof(double)*2);
+ASPARTAMEV0_OPT_IMPL(bool, sizeof(bool)*2);
+ASPARTAMEV0_OPT_IMPL(const char*, sizeof(char*)*2);

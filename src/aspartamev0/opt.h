@@ -32,13 +32,14 @@ namespace aspartamev0 {
     Opt(const Opt& rhs);
     Opt(Opt&& rhs) noexcept;
 
-    void reset();
-    void set(const char* value, bool canThrow = true);
     const typeValue getDefault();
-
     operator typeValue();
     operator typeValue() const;
     const typeValue operator()() const; // explicit version of getting the value, for cases where the implicit conversion doesn't work
+
+    void reset();
+    void set(const char* value, bool canThrow = true);
+
     Opt& operator=(const typeValue& value);
     Opt& operator=(const Opt& rhs);
     Opt& operator=(Opt&& rhs) noexcept;

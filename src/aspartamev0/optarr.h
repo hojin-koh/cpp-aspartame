@@ -40,7 +40,6 @@ namespace aspartamev0 {
 
     void clear();
     void reset();
-    void set(int64_t pos, const typeValue value);
     void set(int64_t pos, const char* value, bool canThrow = true);
 
     OptArr& operator=(std::initializer_list<typeValue> value);
@@ -50,32 +49,6 @@ namespace aspartamev0 {
     class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
   };
 
-  // Scalar option - string specialization
-  //template <int SIZE>
-  //struct Opt<const char*, SIZE> : public IOpt {
-  //  using IOpt::IOpt;
-  //  using typeValue = const char*;
-  //  Opt(const typeValue& value);
-  //  Opt(const Opt& rhs);
-  //  Opt(Opt&& rhs) noexcept;
-
-  //  void reset();
-  //  void set(const char* value, bool canThrow = true);
-  //  const typeValue getDefault();
-
-  //  operator typeValue();
-  //  operator typeValue() const;
-  //  const typeValue operator()() const; // explicit version of getting the value, for cases where the implicit conversion doesn't work
-  //  typeValue operator=(const typeValue& value);
-  //  typeValue operator=(const Opt& rhs);
-  //  typeValue operator=(Opt&& rhs) noexcept;
-  //private:
-  //  class Impl; cppcfwv0::PImplS<Impl, SIZE> pimpl;
-  //};
-
-  //using OptArrInt = OptArr<int64_t, sizeof(int64_t)*2>;
-  //using OptArrFloat = OptArr<double, sizeof(double)*2>;
-  //using OptArrBool = OptArr<bool, sizeof(bool)*2>;
   using OptArrInt = OptArr<int64_t, 160>;
   using OptArrFloat = OptArr<double, 160>;
   using OptArrBool = OptArr<bool, 160>;

@@ -49,6 +49,12 @@ namespace aspartamev0 {
   template <typename T, int SIZE>
   Opt<T,SIZE>::Opt(Opt<T,SIZE>&& rhs) noexcept : pimpl(std::move(rhs.pimpl)) {}
 
+
+  template <typename T, int SIZE>
+  const T Opt<T,SIZE>::getDefault() {
+    return pimpl->m_default;
+  }
+
   template <typename T, int SIZE>
   Opt<T,SIZE>::operator T() {
     return pimpl->m_data;
@@ -63,6 +69,7 @@ namespace aspartamev0 {
   const T Opt<T,SIZE>::operator()() const {
     return pimpl->m_data;
   }
+
 
   template <typename T, int SIZE>
   Opt<T,SIZE>& Opt<T,SIZE>::operator=(const T& value) {
@@ -85,11 +92,6 @@ namespace aspartamev0 {
   template <typename T, int SIZE>
   void Opt<T,SIZE>::reset() {
     pimpl->m_data = pimpl->m_default;
-  }
-
-  template <typename T, int SIZE>
-  const T Opt<T,SIZE>::getDefault() {
-    return pimpl->m_default;
   }
 
   template <> // int specialization

@@ -5,6 +5,27 @@
 
 SCENARIO("Number Array Opts", "[optarrnum]") {
 
+  GIVEN("Empty array options") {
+    aspartamev0::OptArrInt ei;
+    aspartamev0::OptArrFloat ef;
+    aspartamev0::OptArrBool eb;
+
+    THEN("They have correct size") {
+      REQUIRE(ei.size() == 0);
+      REQUIRE(ef.size() == 0);
+      REQUIRE(eb.size() == 0);
+    }
+
+    THEN("Accessing them from different directions throws") {
+      REQUIRE_THROWS(ei[0]);
+      REQUIRE_THROWS(ei[-1]);
+      REQUIRE_THROWS(ef[0]);
+      REQUIRE_THROWS(ef[-1]);
+      REQUIRE_THROWS(eb[0]);
+      REQUIRE_THROWS(eb[-1]);
+    }
+  }
+
   GIVEN("Individual options") {
     aspartamev0::OptArrInt i {30, 40, 50};
     aspartamev0::OptArrFloat f {0.25, 0.75};
@@ -16,47 +37,71 @@ SCENARIO("Number Array Opts", "[optarrnum]") {
       REQUIRE(b.size() == 4);
     }
 
-    //THEN("They should have that default value") {
-    //  REQUIRE(i == 30);
-    //  REQUIRE(f == 0.25);
-    //  REQUIRE(!b);
-    //}
+    THEN("They should have that default value") {
+      REQUIRE(i[0] == 30);
+      REQUIRE(i[1] == 40);
+      REQUIRE(i[2] == 50);
+      REQUIRE(f[0] == 0.25);
+      REQUIRE(f[1] == 0.75);
+      REQUIRE(!b[0]);
+      REQUIRE(!b[1]);
+      REQUIRE(b[2]);
+      REQUIRE(b[3]);
+    }
 
-    //THEN("We can get the value through the explicit operator") {
-    //  REQUIRE(i() == 30);
-    //  REQUIRE(f() == 0.25);
-    //  REQUIRE(!b());
-    //}
+    THEN("They should be accessible through negative index") {
+      REQUIRE(i[-3] == 30);
+      REQUIRE(i[-2] == 40);
+      REQUIRE(i[-1] == 50);
+      REQUIRE(f[-2] == 0.25);
+      REQUIRE(f[-1] == 0.75);
+      REQUIRE(!b[-4]);
+      REQUIRE(!b[-3]);
+      REQUIRE(b[-2]);
+      REQUIRE(b[-1]);
+    }
 
-    //THEN("They can be used in function calls") {
-    //  REQUIRE(add1(i) == 31);
-    //}
+    THEN("Their individual value can be set") {
+      i[1] = 27;
+      REQUIRE(i[-2] == 27);
+      f[1] = 1.25;
+      REQUIRE(f[-1] == 1.25);
+      b[0] = true;
+      REQUIRE(b[-4]);
+    }
 
-    //THEN("They can be used in arithmetics") {
-    //  REQUIRE(i + i*2 == 90);
-    //  REQUIRE(i + 4*f == 31);
-    //}
+    THEN("Their contents can be cleared") {
+      i.clear();
+      REQUIRE(i.size() == 0);
+      f.clear();
+      REQUIRE(f.size() == 0);
+      b.clear();
+      REQUIRE(b.size() == 0);
+    }
 
-    //THEN("They should have some other value after setting it") {
-    //  i = 50;
-    //  REQUIRE(i == 50);
-    //  f = 0.5;
-    //  REQUIRE(f == 0.5);
-    //  b = true;
-    //  REQUIRE(b);
-    //}
+    THEN("They should have the default value after reset") {
+      i.clear();
+      i.reset();
+      REQUIRE(i.size() == 3);
+      REQUIRE(i[-1] == 50);
+      f.clear();
+      f.reset();
+      REQUIRE(f.size() == 2);
+      REQUIRE(f[-1] == 0.75);
+      b.clear();
+      b.reset();
+      REQUIRE(b.size() == 4);
+      REQUIRE(b[-1]);
+    }
 
-    //THEN("They should have the default value after reset") {
-    //  i = 50;
-    //  i.reset();
-    //  REQUIRE(i == 30);
-    //  f = 0.99;
-    //  f.reset();
-    //  REQUIRE(f == 0.25);
-    //  b = true;
-    //  b.reset();
-    //  REQUIRE(!b);
-    //}
+    THEN("Out-of-bound access should throw") {
+      REQUIRE_THROWS(i[5]);
+      REQUIRE_THROWS(f[8]);
+      REQUIRE_THROWS(b[9]);
+      REQUIRE_THROWS(i[5] = 10);
+      REQUIRE_THROWS(f[8] = 2.5);
+      REQUIRE_THROWS(b[9] = false);
+    }
   }
 
   //GIVEN("Some same-type options") {

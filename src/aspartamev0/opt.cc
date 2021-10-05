@@ -66,28 +66,24 @@ namespace aspartamev0 {
 
   template <typename T, int SIZE>
   Opt<T,SIZE>& Opt<T,SIZE>::operator=(const T& value) {
-    m_changed = true;
     pimpl->m_data = value;
     return *this;
   }
 
   template <typename T, int SIZE>
   Opt<T,SIZE>& Opt<T,SIZE>::operator=(const Opt<T,SIZE>& rhs) {
-    m_changed = true;
     pimpl->m_data = rhs.pimpl->m_data;
     return *this;
   }
 
   template <typename T, int SIZE>
   Opt<T,SIZE>& Opt<T,SIZE>::operator=(Opt<T,SIZE>&& rhs) noexcept {
-    m_changed = true;
     pimpl->m_data = std::move(rhs.pimpl->m_data);
     return *this;
   }
 
   template <typename T, int SIZE>
   void Opt<T,SIZE>::reset() {
-    m_changed = false;
     pimpl->m_data = pimpl->m_default;
   }
 
@@ -169,7 +165,6 @@ namespace aspartamev0 {
   template <>
   OptStr& OptStr::operator=(const char* const& value) {
     if (value == nullptr) throw std::domain_error("Encountered null pointer when assigning string");
-    m_changed = true;
     pimpl->m_data = value;
     return *this;
   }

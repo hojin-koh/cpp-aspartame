@@ -29,20 +29,21 @@ namespace aspartamev0 {
   struct OptArr : public IOpt {
     using IOpt::IOpt;
     using typeValue = T;
-    OptArr(const std::initializer_list<typeValue>& value);
-    OptArr(std::initializer_list<typeValue>&& value) noexcept;
+    OptArr();
+    OptArr(const std::initializer_list<typeValue> value);
     OptArr(const OptArr& rhs);
     OptArr(OptArr&& rhs) noexcept;
 
     decltype(sizeof(int)) size() const;
-    //const T& operator[]( TODO
+    T& operator[](int64_t pos);
+    const T operator[](int64_t pos) const; // Indexing is read-only
 
+    void clear();
     void reset();
-    void set(const char* value, bool canThrow = true);
+    void set(int64_t pos, const typeValue value);
+    void set(int64_t pos, const char* value, bool canThrow = true);
 
-    //const typeValue& operator()() const; // explicit version of getting the value, for cases where the implicit conversion doesn't work
-    OptArr& operator=(const std::initializer_list<typeValue>& value);
-    OptArr& operator=(std::initializer_list<typeValue>&& value) noexcept;
+    OptArr& operator=(std::initializer_list<typeValue> value);
     OptArr& operator=(const OptArr& rhs);
     OptArr& operator=(OptArr&& rhs) noexcept;
   private:
@@ -75,9 +76,9 @@ namespace aspartamev0 {
   //using OptArrInt = OptArr<int64_t, sizeof(int64_t)*2>;
   //using OptArrFloat = OptArr<double, sizeof(double)*2>;
   //using OptArrBool = OptArr<bool, sizeof(bool)*2>;
-  using OptArrInt = OptArr<int64_t, 48>;
-  using OptArrFloat = OptArr<double, 48>;
-  using OptArrBool = OptArr<bool, 80>;
+  using OptArrInt = OptArr<int64_t, 160>;
+  using OptArrFloat = OptArr<double, 160>;
+  using OptArrBool = OptArr<bool, 160>;
   //using OptStr = Opt<const char*, sizeof(char*)*2>;
 
 }

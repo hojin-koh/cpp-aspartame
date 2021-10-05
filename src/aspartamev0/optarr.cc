@@ -19,7 +19,7 @@
 
 #include <cppcfwv0/pimpl-static-inl.h>
 #include <utility>
-#include <vector>
+#include <deque>
 //#include <string>
 //#include <cstdlib>
 //#include <stdexcept>
@@ -31,8 +31,9 @@ namespace aspartamev0 {
     Impl() {}
     Impl(const std::initializer_list<T>& value) : m_default(value), m_data(value) {};
 
-    const std::vector<T> m_default;
-    std::vector<T> m_data;
+    // Use deque here to avoid the annoying vector<bool> specialization
+    const std::deque<T> m_default;
+    std::deque<T> m_data;
 
     // Provide assignment operator that shouldn't be called but are needed to compile
     Impl& operator=(const Impl& rhs) {
@@ -42,10 +43,10 @@ namespace aspartamev0 {
   };
 
   template <typename T, int SIZE>
-  OptArr<T,SIZE>::OptArr(const std::initializer_list<T>& value) : pimpl(value) {}
+  OptArr<T,SIZE>::OptArr() : pimpl() {}
 
   template <typename T, int SIZE>
-  OptArr<T,SIZE>::OptArr(std::initializer_list<T>&& value) noexcept : pimpl(std::move(value)) {}
+  OptArr<T,SIZE>::OptArr(const std::initializer_list<T> value) : pimpl(value) {}
 
   template <typename T, int SIZE>
   OptArr<T,SIZE>::OptArr(const OptArr<T,SIZE>& rhs) : pimpl(rhs.pimpl) {}
@@ -53,40 +54,61 @@ namespace aspartamev0 {
   template <typename T, int SIZE>
   OptArr<T,SIZE>::OptArr(OptArr<T,SIZE>&& rhs) noexcept : pimpl(std::move(rhs.pimpl)) {}
 
+
   template <typename T, int SIZE>
   decltype(sizeof(int)) OptArr<T,SIZE>::size() const {
     return pimpl->m_data.size();
   }
 
+  template <typename T, int SIZE>
+  T& OptArr<T,SIZE>::operator[](int64_t pos) {
+    if (pos < 0) {
+      return pimpl->m_data.at(size()+pos);
+    } else {
+      return pimpl->m_data.at(pos);
+    }
+  }
+
+  template <typename T, int SIZE>
+  const T OptArr<T,SIZE>::operator[](int64_t pos) const {
+    if (pos < 0) {
+      return pimpl->m_data.at(size()+pos);
+    } else {
+      return pimpl->m_data.at(pos);
+    }
+  }
+
+
+  template <typename T, int SIZE>
+  void OptArr<T,SIZE>::clear() {
+    pimpl->m_data.clear();
+  }
+
+  template <typename T, int SIZE>
+  void OptArr<T,SIZE>::reset() {
+    pimpl->m_data = pimpl->m_default;
+  }
+
+
 
   //template <typename T, int SIZE>
   //T& Opt<T,SIZE>::operator=(const T& value) {
-  //  m_changed = true;
   //  return (pimpl->m_data = value);
   //}
 
   //template <typename T, int SIZE>
   //T& Opt<T,SIZE>::operator=(T&& value) noexcept {
-  //  m_changed = true;
   //  return (pimpl->m_data = std::move(value));
   //}
 
   //template <typename T, int SIZE>
   //T& Opt<T,SIZE>::operator=(const Opt<T,SIZE>& rhs) {
-  //  m_changed = true;
   //  return (pimpl->m_data = rhs.pimpl->m_data);
   //}
 
   //template <typename T, int SIZE>
   //T& Opt<T,SIZE>::operator=(Opt<T,SIZE>&& rhs) noexcept {
-  //  m_changed = true;
   //  return (pimpl->m_data = std::move(rhs.pimpl->m_data));
-  //}
-
-  //template <typename T, int SIZE>
-  //void Opt<T,SIZE>::reset() {
-  //  m_changed = false;
-  //  pimpl->m_data = pimpl->m_default;
   //}
 
   //template <typename T, int SIZE>
@@ -177,19 +199,16 @@ namespace aspartamev0 {
   //template <>
   //const char* OptStr::operator=(const char* const& value) {
   //  if (value == nullptr) throw std::domain_error("Encountered null pointer when assigning string");
-  //  m_changed = true;
   //  return (pimpl->m_data = value).c_str();
   //}
 
   //template <>
   //const char* OptStr::operator=(const OptStr& rhs) {
-  //  m_changed = true;
   //  return (pimpl->m_data = rhs.pimpl->m_data).c_str();
   //}
 
   //template <>
   //const char* OptStr::operator=(OptStr&& rhs) noexcept {
-  //  m_changed = true;
   //  return (pimpl->m_data = std::move(rhs.pimpl->m_data)).c_str();
   //}
 
@@ -200,7 +219,6 @@ namespace aspartamev0 {
 
   //template <>
   //void OptStr::reset() {
-  //  m_changed = false;
   //  pimpl->m_data = pimpl->m_default;
   //}
 
@@ -212,7 +230,7 @@ namespace aspartamev0 {
 
 }
 
-ASPARTAMEV0_OPTARR_IMPL(int64_t, 48);
-ASPARTAMEV0_OPTARR_IMPL(double, 48);
-ASPARTAMEV0_OPTARR_IMPL(bool, 80);
+ASPARTAMEV0_OPTARR_IMPL(int64_t, 160);
+ASPARTAMEV0_OPTARR_IMPL(double, 160);
+ASPARTAMEV0_OPTARR_IMPL(bool, 160);
 //ASPARTAMEV0_OPT_IMPL(const char*, sizeof(char*)*2);

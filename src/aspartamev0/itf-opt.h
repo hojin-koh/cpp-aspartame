@@ -21,13 +21,11 @@ namespace aspartamev0 {
 
   // Basic interface for all options
   struct IOpt {
-    bool hasChanged() const { return m_changed; }
     void reset();
 
     IOpt() = default;
   protected:
     ~IOpt() = default; // To prevent polymorphic use
-    bool m_changed {false};
   };
 
 }
